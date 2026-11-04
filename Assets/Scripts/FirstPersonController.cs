@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -223,9 +224,7 @@ namespace StarterAssets
 				{
 					_jumpTimeoutDelta -= Time.deltaTime;
 				}
-			}
-			else
-			{
+			} else {
 				// reset the jump timeout timer
 				_jumpTimeoutDelta = JumpTimeout;
 
@@ -245,6 +244,10 @@ namespace StarterAssets
 				_verticalVelocity += Gravity * Time.deltaTime;
 			}
 		}
+
+		public void OnDash(){
+			_controller.Move(new Vector3(0f, 0f, 0f).normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, 0f, 0.0f) * Time.deltaTime);
+		}	
 
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 		{

@@ -8,5 +8,14 @@ public class ShootingBehavior : MonoBehaviour
         Debug.Log("pew");
     }
 
+    public void OnFire()
+    {
+        Shoot();
+    }
+
+    public void OnAltFire()
+    {
+        Debug.Log("pew but no");
+    }
     
 }
