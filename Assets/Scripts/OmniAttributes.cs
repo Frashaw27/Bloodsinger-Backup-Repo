@@ -3,6 +3,8 @@ using UnityEngine;
 public class OmniAttributes : MonoBehaviour
 {
     public int hp = 5;
+    public int iFrames = 0;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

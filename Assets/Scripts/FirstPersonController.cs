@@ -36,6 +36,12 @@ namespace StarterAssets
 
 		[Header("Player Grounded")]
 		[Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
+
+		public Vector3 playerMovement;
+		public bool isDashing = false;
+		public int dashFrames = 0;
+
+
 		public bool Grounded = true;
 		[Tooltip("Useful for rough ground")]
 		public float GroundedOffset = -0.14f;
@@ -127,7 +133,9 @@ namespace StarterAssets
 		{
 			// set sphere position, with offset
 			Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
-			Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
+			if (!isDashing){
+				Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
+			}
 		}
 
 		private void CameraRotation()
@@ -154,6 +162,14 @@ namespace StarterAssets
 
 		private void Move()
 		{
+			if (dashFrames > 0){
+				dashFrames--;
+				if (dashFrames == 0){
+					isDashing = false;
+				} else {
+					return;
+				}
+			}
 			// set target speed based on move speed, sprint speed and if sprint is pressed
 			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
@@ -195,8 +211,10 @@ namespace StarterAssets
 				inputDirection = transform.right * _input.move.x + transform.forward * _input.move.y;
 			}
 
+			float verticalMovement = (!isDashing) ? _verticalVelocity : 0f;
+			playerMovement = inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, verticalMovement, 0.0f) * Time.deltaTime;
 			// move the player
-			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+			_controller.Move(playerMovement);
 		}
 
 		private void JumpAndGravity()
@@ -246,7 +264,11 @@ namespace StarterAssets
 		}
 
 		public void OnDash(){
-			_controller.Move(new Vector3(0f, 0f, 0f).normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, 0f, 0.0f) * Time.deltaTime);
+			//Debug.Log("dash");
+			if (isDashing) return;
+			_controller.Move(playerMovement * 10);
+			isDashing = true;
+			dashFrames = 60;
 		}	
 
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
