@@ -40,6 +40,9 @@ namespace StarterAssets
 		public Vector3 playerMovement;
 		public bool isDashing = false;
 		public int dashFrames = 0;
+		public bool noMove = false;
+		public PlayerInput pi;
+		public Vector3 inputDirection;
 
 
 		public bool Grounded = true;
@@ -100,6 +103,7 @@ namespace StarterAssets
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
+			pi = GetComponent<PlayerInput>();
 		}
 
 		private void Start()
@@ -166,8 +170,9 @@ namespace StarterAssets
 				dashFrames--;
 				if (dashFrames == 0){
 					isDashing = false;
+					pi.actions.FindAction("Move").Enable();
 				} else {
-					return;
+					//return;
 				}
 			}
 			// set target speed based on move speed, sprint speed and if sprint is pressed
@@ -201,7 +206,7 @@ namespace StarterAssets
 			}
 
 			// normalise input direction
-			Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
+			if (!isDashing) inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
 			// note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 			// if there is a move input rotate player when the player is moving
@@ -212,7 +217,11 @@ namespace StarterAssets
 			}
 
 			float verticalMovement = (!isDashing) ? _verticalVelocity : 0f;
-			playerMovement = inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, verticalMovement, 0.0f) * Time.deltaTime;
+			if (!isDashing){
+				playerMovement = inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, verticalMovement, 0.0f) * Time.deltaTime;
+			} else {
+				playerMovement.y = 0f;
+			}
 			// move the player
 			_controller.Move(playerMovement);
 		}
@@ -266,9 +275,10 @@ namespace StarterAssets
 		public void OnDash(){
 			//Debug.Log("dash");
 			if (isDashing) return;
-			_controller.Move(playerMovement * 10);
+			_controller.SimpleMove(playerMovement * 10);
 			isDashing = true;
-			dashFrames = 60;
+			dashFrames = 30;
+			pi.actions.FindAction("Move").Disable();
 		}	
 
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
