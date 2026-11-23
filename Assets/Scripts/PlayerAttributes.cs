@@ -34,6 +34,10 @@ public class PlayerAttributes : OmniAttributes
         }
     }
 
+    public void OnParticleTrigger(){
+        Debug.Log("hh");
+    }
+
     public override void die(){
         Debug.Log("you died");
     }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemybehavior : OmniAttributes
+public class EnemyBehavior : OmniAttributes
 {
     public GameObject splatter;
     public AudioClip hitSound;
@@ -20,11 +20,11 @@ public class Enemybehavior : OmniAttributes
     public virtual void collisionLogic(Collision collision){
         //Take damage when contacting the sword
         //Instantiate(gameObject, new Vector3 (transform.position.x, transform.position.y, transform.position.z), Quaternion.identity);
-        if (collision.gameObject.CompareTag("Weapon")){
-            Debug.Log("hit");
-            gainHp(-1);
-            AudioManager.Instance.PlaySoundEffect(hitSound, 1f);
-        }
+        //if (collision.gameObject.CompareTag("Weapon")){
+            //Debug.Log("hit");
+            //gainHp(-1);
+            //AudioManager.Instance.PlaySoundEffect(hitSound, 1f);
+        //}
     }
 
     public override void die(){

@@ -19,4 +19,17 @@ public class BloodParticleBehavior : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public void OnTriggerEnter(Collider other){
+        collisionLogic(other);
+    }
+
+    //Handles the logic of collisions
+    public virtual void collisionLogic(Collider collision){
+        if (collision.gameObject.CompareTag("Player")){
+            //Debug.Log("hh");
+            collision.GetComponent<PlayerAttributes>().bloodAmount += 10f;
+            gameObject.GetComponent<Collider>().enabled = false;
+        }
+    }
 }

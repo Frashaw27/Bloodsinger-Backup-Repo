@@ -56,6 +56,7 @@ namespace StarterAssets
 		[Header("Cinemachine")]
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
 		public GameObject CinemachineCameraTarget;
+		public GameObject VisibleWeapon;
 		[Tooltip("How far in degrees can you move the camera up")]
 		public float TopClamp = 90.0f;
 		[Tooltip("How far in degrees can you move the camera down")]
@@ -219,8 +220,6 @@ namespace StarterAssets
 			float verticalMovement = (!isDashing) ? _verticalVelocity : 0f;
 			if (!isDashing){
 				playerMovement = inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, verticalMovement, 0.0f) * Time.deltaTime;
-			} else {
-				playerMovement.y = 0f;
 			}
 			// move the player
 			_controller.Move(playerMovement);
@@ -275,11 +274,17 @@ namespace StarterAssets
 		public void OnDash(){
 			//Debug.Log("dash");
 			if (isDashing) return;
-			_controller.SimpleMove(playerMovement * 10);
-			isDashing = true;
-			dashFrames = 30;
+			playerMovement.y = 0f;
+			dash(playerMovement, 30, 60);
 			pi.actions.FindAction("Move").Disable();
-		}	
+		}
+
+		public void dash(Vector3 angle, float speed, int frames){
+			playerMovement = angle * speed * Time.deltaTime;
+			transform.Translate(playerMovement);
+			isDashing = true;
+			dashFrames = frames;
+		}
 
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 		{

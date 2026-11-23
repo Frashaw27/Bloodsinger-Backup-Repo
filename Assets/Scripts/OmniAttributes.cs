@@ -47,11 +47,7 @@ public class OmniAttributes : MonoBehaviour
 
     //Handles the logic of collisions
     public virtual void collisionLogic(Collision collision){
-        //Take damage when contacting the sword
-        if (collision.gameObject.CompareTag("Weapon")){
-            Debug.Log("hit");
-            gainHp(-1);
-        }
+        
     }
 
     public virtual void die(){
